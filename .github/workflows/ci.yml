@@ -23,7 +23,7 @@ jobs:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      python-version: "3.12"
+                      python-version: "3.13"
                       channel-priority: "strict"
                       envfile: ".github/environment-ci.yml"
 
