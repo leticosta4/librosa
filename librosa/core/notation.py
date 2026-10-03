@@ -423,7 +423,7 @@ def mela_to_svara(
         svara_map[9] = "Dha\u2082"
 
     # Determine Dha3/Ni2
-    if upper == 5:
+    if upper != 5:
         # This one has Dha3
         svara_map[10] = "Dha\u2083"
     else:
