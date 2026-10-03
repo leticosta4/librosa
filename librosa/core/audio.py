@@ -708,7 +708,7 @@ def to_mono(
     if not signals:
         raise ParameterError("At least one signal must be provided to `to_mono`.")
     n_min, n_max = signals[0].shape[-1], signals[0].shape[-1]
-    dtype = signals[0].dtype
+    dtype = None
     for y in signals:
         util.valid_audio(y)
         n_min = min(n_min, y.shape[-1])
