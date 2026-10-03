@@ -116,3 +116,5 @@ type _Number = complex | np.number[Any]
 # Shape-typing
 type _Array1D[ScalarT: np.generic] = np.ndarray[tuple[int], np.dtype[ScalarT]]
 type _Array2D[ScalarT: np.generic] = np.ndarray[tuple[int, int], np.dtype[ScalarT]]
+
+# track-flaky: commit trivial para disparar CI (2026-09-28)
