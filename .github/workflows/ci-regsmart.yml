@@ -2,8 +2,8 @@ name: CI w/ pytest-regsmart
 
 on:
   push:
-    branches:
-    - '!main'
+    branches-ignore:
+      - main
   pull_request:
     branches:
     - main
@@ -38,7 +38,7 @@ jobs:
                       envfile: ".github/environment-ci.yml"
                     - python-version: "3.12"
                       mode: rgsm_hybrid
-                      weight: "1-0"
+                      weight: "1-1"
                       channel-priority: "strict"
                       envfile: ".github/environment-ci.yml"
 
@@ -90,18 +90,19 @@ jobs:
           run: python -m pip install --upgrade-strategy only-if-needed -e .[tests]
 
         - name: Install pytest-regsmart
+          shell: bash -l {0}
           run: |
-            python -m pip install --system "$REGSMART_PACKAGE"
-            python -m pip freeze --system
+            python -m pip install "$REGSMART_PACKAGE"
+            python -m pip freeze
 
         - name: Restore pytest-regsmart cache
           id: restore-pytest-regsmart-cache
           uses: actions/cache/restore@v4
           with:
             path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranked_selection_data
-            key: pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}
+            key: pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}
             restore-keys: |
-              pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}
+              pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}
 
         - name: Run pytest w/ pytest-regsmart
           shell: bash -l {0}
@@ -112,7 +113,7 @@ jobs:
           uses: actions/cache/save@v4
           with:
             path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranked_selection_data
-            key: pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ github.run_id }}
+            key: pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-${{ github.run_id }}
 
         - name: Prepare artifact directory structure
           if: failure() && hashFiles('mpl_image_results/**') != ''
