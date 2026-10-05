@@ -14,18 +14,36 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RANKING_PACKAGE: "pytest-ranking"
+
 jobs:
     test:
-        name: >-
-          Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
+        name: ranking (${{ matrix.mode }})
+        runs-on: ubuntu-latest
 
         strategy:
             fail-fast: false
             matrix:
                 include:
-                    - os: ubuntu-latest
-                      python-version: "3.12"
+                    - python-version: "3.12"
+                      mode: rkn_qtf
+                      weight: "1-0-0"
+                      channel-priority: "strict"
+                      envfile: ".github/environment-ci.yml"
+                    - python-version: "3.12"
+                      mode: rkn_recentfail
+                      weight: "0-1-0"
+                      channel-priority: "strict"
+                      envfile: ".github/environment-ci.yml"
+                    - python-version: "3.12"
+                      mode: rkn_simchgpath
+                      weight: "0-0-1"
+                      channel-priority: "strict"
+                      envfile: ".github/environment-ci.yml"
+                    - python-version: "3.12"
+                      mode: rkn_hybrid
+                      weight: "1-1-1"
                       channel-priority: "strict"
                       envfile: ".github/environment-ci.yml"
 
@@ -74,10 +92,31 @@ jobs:
           shell: bash -l {0}
           run: python -m pip install --upgrade-strategy only-if-needed -e .[tests]
 
-        - name: Run pytest
-          shell: bash -l {0}
-          run: pytest -p no:pytest-regsmart -p no:pytest-ranking --mpl-results-path=mpl_image_results/
+        - name: Install pytest-ranking
+          run: |
+            uv pip install --system "$RANKING_PACKAGE"
+            uv pip freeze --system
 
+        - name: Restore pytest-ranking cache
+          id: restore-pytest-ranking-cache
+          if: always()
+          uses: actions/cache/restore@v4
+          with:
+            path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
+            key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.python }}
+
+        - name: Run pytest w/ pytest-ranking
+          shell: bash -l {0}
+          run: pytest --rank --rank-weight=${{ matrix.weight }} --mpl-results-path=mpl_image_results/
+
+        - name: Save pytest-ranking cache
+          id: save-pytest-ranking-cache
+          if: always()
+          uses: actions/cache/save@v4
+          with:
+            path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
+            key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.python }}-${{ github.run_id }}
+            
         - name: Prepare artifact directory structure
           if: failure() && hashFiles('mpl_image_results/**') != ''
           id: prep_artifact
