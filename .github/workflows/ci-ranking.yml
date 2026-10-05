@@ -1,4 +1,4 @@
-name: CI
+name: CI w/ pytest-ranking
 
 on:
   push:
@@ -94,8 +94,8 @@ jobs:
 
         - name: Install pytest-ranking
           run: |
-            uv pip install --system "$RANKING_PACKAGE"
-            uv pip freeze --system
+            python -m pip install --system "$RANKING_PACKAGE"
+            python -m pip freeze --system
 
         - name: Restore pytest-ranking cache
           id: restore-pytest-ranking-cache

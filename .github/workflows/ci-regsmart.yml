@@ -1,4 +1,4 @@
-name: CI
+name: CI w/ pytest-regsmart
 
 on:
   push:
@@ -91,8 +91,8 @@ jobs:
 
         - name: Install pytest-regsmart
           run: |
-            uv pip install --system "$REGSMART_PACKAGE"
-            uv pip freeze --system
+            python -m pip install --system "$REGSMART_PACKAGE"
+            python -m pip freeze --system
 
         - name: Restore pytest-regsmart cache
           id: restore-pytest-regsmart-cache
