@@ -1,9 +1,6 @@
 name: CI w/ pytest-regsmart RTP only
 
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches:
     - main
