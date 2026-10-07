@@ -1,9 +1,9 @@
-name: CI
+name: CI w/ pytest-regsmart RTP only
 
 on:
   push:
-    branches:
-    - main
+    branches-ignore:
+      - main
   pull_request:
     branches:
     - main
@@ -14,23 +14,25 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  REGSMART_PACKAGE: "git+https://github.com/leticosta4/pytest-regsmart@9dcd610633b615a8964e99c4117d5c680c93b791"
+
 jobs:
-    test:
-        name: >-
-          Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
+    test-regsmart-nr:
+        runs-on: ubuntu-latest
 
         strategy:
             fail-fast: false
             matrix:
                 include:
-                    - os: ubuntu-latest
-                      python-version: "3.12"
+                    - python-version: "3.12"
                       channel-priority: "strict"
                       envfile: ".github/environment-ci.yml"
 
         steps:
         - uses: actions/checkout@v7
+          with:
+            fetch-depth: 0
 
         - name: Setup Miniforge
           uses: conda-incubator/setup-miniconda@v4
@@ -74,9 +76,15 @@ jobs:
           shell: bash -l {0}
           run: python -m pip install --upgrade-strategy only-if-needed -e .[tests]
 
+        - name: Install pytest-regsmart
+          shell: bash -l {0}
+          run: |
+            python -m pip install "$REGSMART_PACKAGE"
+            python -m pip freeze
+
         - name: Run pytest
           shell: bash -l {0}
-          run: pytest -p no:pytest-regsmart -p no:pytest-ranking --mpl-results-path=mpl_image_results/
+          run: pytest --regsmart --no-rank --mpl-results-path=mpl_image_results/
 
         - name: Prepare artifact directory structure
           if: failure() && hashFiles('mpl_image_results/**') != ''
