@@ -1,13 +1,9 @@
 name: CI w/ pytest-regsmart
 
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches:
     - main
-    - 'mut-*'
   workflow_dispatch:
 
 concurrency:
@@ -15,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  REGSMART_PACKAGE: "git+https://github.com/leticosta4/pytest-regsmart@9dcd610633b615a8964e99c4117d5c680c93b791"
+  REGSMART_PACKAGE: "git+https://github.com/leticosta4/pytest-regsmart@e8fe612271bc27698cd8285a535209262e8e1a03"
 
 jobs:
     test:

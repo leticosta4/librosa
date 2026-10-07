@@ -1,13 +1,9 @@
 name: CI w/ pytest-ranking
 
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches:
     - main
-    - 'mut-*'
   workflow_dispatch:
 
 concurrency:
