@@ -1704,7 +1704,7 @@ def chroma_vqt(
         fmin=fmin,
     )
 
-    chroma = np.einsum("cf,...ft->...ct", vq_to_chr, V, optimize=False)
+    chroma = np.einsum("cf,...ft->...ct", vq_to_chr, V, optimize=True)
 
     if threshold is not None:
         chroma[chroma < threshold] = 0.0
