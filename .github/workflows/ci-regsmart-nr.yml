@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  REGSMART_PACKAGE: "git+https://github.com/leticosta4/pytest-regsmart@6c135576b567d77a8f412693a058cbe67c9e8590"
+  REGSMART_PACKAGE: "git+https://github.com/leticosta4/pytest-regsmart@71e176c9c867760a6abd5d4fa1a8efc81486bbcd"
 
 jobs:
     test-regsmart-nr:
@@ -78,9 +78,12 @@ jobs:
             python -m pip install "$REGSMART_PACKAGE"
             python -m pip freeze
 
+        - name: Install reportlog
+          run: pip install pytest-reportlog
+
         - name: Run pytest
           shell: bash -l {0}
-          run: pytest --regsmart --no-rank --mpl-results-path=mpl_image_results/
+          run: pytest --regsmart --no-rank --report-log=reportlog.jsonl --mpl-results-path=mpl_image_results/
 
         - name: Prepare artifact directory structure
           if: failure() && hashFiles('mpl_image_results/**') != ''
@@ -103,3 +106,12 @@ jobs:
             retention-days: 7
             compression-level: 0
             overwrite: true
+
+        - name: Upload report-log
+          if: ${{ !cancelled() }}   # com mutante o step de teste falha; sem isso o arquivo não sobe
+          uses: actions/upload-artifact@v4
+          with:
+            name: reportlog-main   # sem matriz: reportlog-main
+            path: reportlog.jsonl
+            retention-days: 14
+            if-no-files-found: warn
