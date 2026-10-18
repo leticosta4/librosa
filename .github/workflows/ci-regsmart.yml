@@ -92,7 +92,7 @@ jobs:
             python -m pip freeze
 
         - name: Install reportlog
-          run: pip install pytest-reportlog
+          run: python -m pip install pytest-reportlog
 
         - name: Restore pytest-regsmart cache
           id: restore-pytest-regsmart-cache
