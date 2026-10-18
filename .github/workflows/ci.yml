@@ -74,7 +74,7 @@ jobs:
           run: python -m pip install --upgrade-strategy only-if-needed -e .[tests]
 
         - name: Install reportlog
-          run: pip install pytest-reportlog
+          run: python -m pip install pytest-reportlog
 
         - name: Run pytest
           shell: bash -l {0}
