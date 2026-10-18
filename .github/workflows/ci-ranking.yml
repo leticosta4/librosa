@@ -101,6 +101,8 @@ jobs:
           with:
             path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
             key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.python-version }}
+            restore-keys: |
+              pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-
 
         - name: Install reportlog
           run: pip install pytest-reportlog
