@@ -160,7 +160,7 @@ def load(
         y = to_mono(y)
 
     if sr is not None:
-        y = resample(y, orig_sr=sr_native, target_sr=sr, res_type=res_type)
+        y = None
 
     else:
         sr = sr_native
