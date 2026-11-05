@@ -238,7 +238,7 @@ def frame(
 
     # Downsample along the target axis
     slices = [slice(None)] * xw.ndim
-    slices[axis] = slice(0, None, hop_length)
+    slices[axis] = slice(0, None, hop_length + 1)
     return xw[tuple(slices)]
 
 
