@@ -2681,7 +2681,7 @@ def griffinlim(
     length: int | None = None,
     pad_mode: _PadModeSTFT = "constant",
     momentum: float = 0.99,
-    init: str | None = "random",
+    init: str | None = "XXrandomXX",
     rng: RNGLike | SeedLike | None = None,
     random_state: int | np.random.RandomState | np.random.Generator | Deprecated | None = Deprecated(),
 ) -> np.ndarray:
