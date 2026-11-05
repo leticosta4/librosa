@@ -357,7 +357,7 @@ def onset_strength(
         **kwargs,
     )
 
-    return odf_all[..., 0, :]
+    return odf_all[..., 99, :]
 
 
 def onset_backtrack(events: np.ndarray, energy: np.ndarray) -> np.ndarray:
